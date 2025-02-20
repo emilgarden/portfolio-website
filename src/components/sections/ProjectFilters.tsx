@@ -1,6 +1,4 @@
 interface ProjectFiltersProps {
-  searchQuery: string
-  setSearchQuery: (query: string) => void
   selectedCategory: string | null
   setSelectedCategory: (category: string | null) => void
   selectedTechnologies: string[]
@@ -9,35 +7,16 @@ interface ProjectFiltersProps {
   technologies: string[]
 }
 
-const ProjectFilters = ({
-  searchQuery,
-  setSearchQuery,
+export default function ProjectFilters({
   selectedCategory,
   setSelectedCategory,
   selectedTechnologies,
   setSelectedTechnologies,
   categories,
   technologies,
-}: ProjectFiltersProps) => {
-  const toggleTechnology = (tech: string) => {
-    if (selectedTechnologies.includes(tech)) {
-      setSelectedTechnologies(selectedTechnologies.filter(t => t !== tech))
-    } else {
-      setSelectedTechnologies([...selectedTechnologies, tech])
-    }
-  }
-
+}: ProjectFiltersProps) {
   return (
     <div className="mb-12 bg-gray-50 rounded-lg p-6">
-      {/* Søkefelt */}
-      <input
-        type="text"
-        placeholder="Søk i prosjekter..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-3 rounded-lg border border-gray-200 mb-6 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
-      />
-
       {/* Kategorifilter */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-3">Kategorier</h3>
@@ -46,7 +25,7 @@ const ProjectFilters = ({
             onClick={() => setSelectedCategory(null)}
             className={`px-4 py-1 rounded-full transition-colors ${
               selectedCategory === null
-                ? 'bg-black text-white'
+                ? 'bg-red-600 text-white'
                 : 'bg-gray-200 hover:bg-gray-300'
             }`}
           >
@@ -58,7 +37,7 @@ const ProjectFilters = ({
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-1 rounded-full transition-colors ${
                 selectedCategory === category
-                  ? 'bg-black text-white'
+                  ? 'bg-red-600 text-white'
                   : 'bg-gray-200 hover:bg-gray-300'
               }`}
             >
@@ -75,10 +54,16 @@ const ProjectFilters = ({
           {technologies.map(tech => (
             <button
               key={tech}
-              onClick={() => toggleTechnology(tech)}
+              onClick={() => {
+                if (selectedTechnologies.includes(tech)) {
+                  setSelectedTechnologies(selectedTechnologies.filter(t => t !== tech))
+                } else {
+                  setSelectedTechnologies([...selectedTechnologies, tech])
+                }
+              }}
               className={`px-4 py-1 rounded-full transition-colors ${
                 selectedTechnologies.includes(tech)
-                  ? 'bg-black text-white'
+                  ? 'bg-red-600 text-white'
                   : 'bg-gray-200 hover:bg-gray-300'
               }`}
             >
@@ -89,6 +74,4 @@ const ProjectFilters = ({
       </div>
     </div>
   )
-}
-
-export default ProjectFilters 
+} 

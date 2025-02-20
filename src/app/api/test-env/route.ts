@@ -1,29 +1,32 @@
-import { PrismaClient } from '@prisma/client'
+import supabase from '../../../../supabaseClient';
 import { NextResponse } from 'next/server';
-
-const globalForPrisma = global as unknown as {
-  prisma: PrismaClient | undefined
-}
-
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 export async function GET() {
   try {
-    await prisma.$connect();
+    console.log('Prøver å koble til Supabase...');
+    const { data, error } = await supabase.from('test').select('*');
     
+    if (error) {
+      console.error('Feil ved henting av data:', error);
+      throw error;
+    }
+
+    if (data.length === 0) {
+      console.log('Ingen data funnet i test-tabellen.');
+      return NextResponse.json({
+        success: true,
+        message: 'Ingen data funnet.',
+        data: [],
+      });
+    }
+
+    console.log('Data hentet:', data);
     return NextResponse.json({
       success: true,
-      database: {
-        url: process.env.DATABASE_URL?.slice(0, 35) + '...',
-        connected: true
-      },
-      supabase: {
-        configured: !!process.env.SUPABASE_URL
-      }
+      data,
     });
   } catch (error) {
+    console.error('Feil i GET-forespørsel:', error);
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Ukjent feil'
