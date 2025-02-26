@@ -38,8 +38,6 @@ export default function FilteredProjects({
   return (
     <div>
       <ProjectFilters
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         selectedTechnologies={selectedTechnologies}

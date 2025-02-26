@@ -9,9 +9,22 @@ import { Search, ChevronDown } from 'lucide-react'
 interface BlogSidebarProps {
   categories: string[]
   tags: string[]
+  activeCategory: string | null
+  activeTag: string | null
+  onCategoryClick: (category: string | null) => void
+  onTagClick: (tag: string | null) => void
+  onClearFilters: () => void
 }
 
-const BlogSidebar = ({ categories, tags }: BlogSidebarProps) => {
+const BlogSidebar = ({
+  categories,
+  tags,
+  activeCategory,
+  activeTag,
+  onCategoryClick,
+  onTagClick,
+  onClearFilters
+}: BlogSidebarProps) => {
   const dispatch = useAppDispatch()
   const { searchQuery, selectedTags, selectedCategory } = useAppSelector(state => state.blog)
   const [localSearch, setLocalSearch] = useState(searchQuery)
@@ -81,78 +94,56 @@ const BlogSidebar = ({ categories, tags }: BlogSidebarProps) => {
         </div>
       </div>
 
-      {/* Kategorier Dropdown */}
+      {/* Kategorier */}
       <div>
-        <h2 className="text-lg font-semibold mb-2">
-          Kategorier
-        </h2>
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full p-3 rounded-lg border border-gray-200 bg-white
-                     flex items-center justify-between
-                     focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
-          >
-            <span className="text-gray-700">
-              {selectedCategory || 'Velg kategori'}
-            </span>
-            <ChevronDown 
-              className={`w-5 h-5 text-gray-400 transition-transform duration-200
-                         ${isDropdownOpen ? 'transform rotate-180' : ''}`}
-            />
-          </button>
-          
-          {isDropdownOpen && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-200">Kategorier</h3>
+        <ul className="space-y-2">
+          {categories.map((category) => (
+            <li key={category}>
               <button
-                onClick={() => handleCategorySelect(null)}
-                className={`
-                  w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors
-                  ${!selectedCategory ? 'text-red-600' : 'text-gray-700'}
-                `}
+                onClick={() => onCategoryClick(activeCategory === category ? null : category)}
+                className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 transition-colors ${
+                  activeCategory === category ? 'bg-red-100 text-red-800 font-medium' : ''
+                }`}
               >
-                Alle kategorier
+                {category}
               </button>
-              {categories.map(category => (
-                <button
-                  key={category}
-                  onClick={() => handleCategorySelect(category)}
-                  className={`
-                    w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors
-                    ${selectedCategory === category ? 'text-red-600' : 'text-gray-700'}
-                  `}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      {/* Tags */}
+      {/* Tagger */}
       <div>
-        <h2 className="text-lg font-semibold mb-2">
-          Tags
-        </h2>
+        <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-200">Tagger</h3>
         <div className="flex flex-wrap gap-2">
-          {tags.map(tag => (
+          {tags.map((tag) => (
             <button
               key={tag}
-              onClick={() => toggleTag(tag)}
-              className={`
-                px-3 py-1 rounded-full text-sm transition-colors
-                ${selectedTags.includes(tag)
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }
-              `}
+              onClick={() => onTagClick(activeTag === tag ? null : tag)}
+              className={`px-3 py-1 rounded-full text-sm ${
+                activeTag === tag
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+              } transition-colors`}
             >
               {tag}
             </button>
           ))}
         </div>
       </div>
+
+      {/* Nullstill filtre */}
+      {(activeCategory || activeTag) && (
+        <div className="pt-4">
+          <button
+            onClick={onClearFilters}
+            className="text-red-600 hover:text-red-800 font-medium"
+          >
+            Nullstill filtre
+          </button>
+        </div>
+      )}
     </aside>
   )
 }

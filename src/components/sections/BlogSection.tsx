@@ -1,10 +1,11 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
+import Image from 'next/image'
+import SectionHeading from '../common/SectionHeading'
 
 interface BlogPost {
-  id: number
+  id: string | number
   title: string
   description: string
   date: string
@@ -14,19 +15,9 @@ interface BlogPost {
   slug: string
 }
 
-const blogPosts: BlogPost[] = [
-  {
-    id: 1,
-    title: "Hvordan jeg bygget min portfolio med Next.js",
-    description: "En dypdykk i prosessen med å lage en moderne og rask portfolio-nettside med Next.js og Tailwind CSS.",
-    date: "2024-01-15",
-    readTime: "5 min",
-    tags: ["Web Utvikling", "Next.js", "React"],
-    imageUrl: "/images/blog/nextjs-portfolio.jpg",
-    slug: "building-portfolio-with-nextjs"
-  },
-  // Legg til flere blogginnlegg her
-]
+interface BlogSectionProps {
+  posts: BlogPost[]
+}
 
 const BlogCard = ({ post }: { post: BlogPost }) => {
   // Helper funksjon for å formatere dato
@@ -90,7 +81,7 @@ const BlogCard = ({ post }: { post: BlogPost }) => {
 
         {/* Les mer lenke */}
         <Link
-          href={`/blogg/${post.slug}`}
+          href={`/blog/${post.slug}`}
           className="inline-flex items-center text-red-600 hover:text-red-700 font-medium"
         >
           Les mer
@@ -113,22 +104,31 @@ const BlogCard = ({ post }: { post: BlogPost }) => {
   )
 }
 
-const BlogSection = () => {
+export default function BlogSection({ posts }: BlogSectionProps) {
   return (
-    <section className="bg-white py-16 px-8">
-      <div className="container-wrapper">
-        <h2 className="text-3xl font-bold mb-8 text-center">
-          Siste Blogginnlegg
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <SectionHeading
+          title="Siste fra bloggen"
+          subtitle="Les våre siste artikler og innlegg"
+          alignment="center"
+        />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+          {posts.map((post) => (
             <BlogCard key={post.id} post={post} />
           ))}
+        </div>
+        
+        <div className="text-center mt-12">
+          <Link 
+            href="/blog" 
+            className="inline-block px-6 py-3 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors"
+          >
+            Se alle innlegg
+          </Link>
         </div>
       </div>
     </section>
   )
-}
-
-export default BlogSection 
+} 
