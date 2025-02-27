@@ -9,6 +9,7 @@ export interface TabSections {
   about: Section
   experience: Section
   skills: Section
+  interests: Section
   philosophy: Section
 }
 

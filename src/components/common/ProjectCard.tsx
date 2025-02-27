@@ -1,5 +1,8 @@
 'use client'
 
+import Link from 'next/link'
+import Image from 'next/image'
+
 interface ProjectCardProps {
   title: string;
   description: string;
@@ -7,6 +10,7 @@ interface ProjectCardProps {
   imageUrl?: string;
   githubUrl?: string;
   liveUrl?: string;
+  slug?: string;
 }
 
 const ProjectCard = ({ 
@@ -15,65 +19,89 @@ const ProjectCard = ({
   technologies, 
   imageUrl = '/placeholder-project.jpg',
   githubUrl,
-  liveUrl 
+  liveUrl,
+  slug
 }: ProjectCardProps) => {
+  // Bestem hvor kortet skal lenke til
+  const getCardLink = () => {
+    if (slug) return `/prosjekter/${slug}`;
+    if (liveUrl) return liveUrl;
+    if (githubUrl) return githubUrl;
+    return '#';
+  };
+
+  const cardLink = getCardLink();
+  const isExternalLink = cardLink.startsWith('http');
+
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
-      {/* Bilde */}
-      <div className="h-48 overflow-hidden">
-        <img 
-          src={imageUrl} 
-          alt={title}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-        />
-      </div>
-
-      {/* Innhold */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">
-          {title}
-        </h3>
-        
-        <p className="text-gray-600 mb-4">
-          {description}
-        </p>
-
-        {/* Teknologier */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {technologies.map((tech, index) => (
-            <span 
-              key={index}
-              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
-            >
-              {tech}
-            </span>
-          ))}
+    <div className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+      {/* Wrapper for hele kortet som en lenke */}
+      <Link 
+        href={cardLink}
+        target={isExternalLink ? "_blank" : undefined}
+        rel={isExternalLink ? "noopener noreferrer" : undefined}
+        className="block h-full"
+      >
+        {/* Bilde */}
+        <div className="h-48 overflow-hidden">
+          <Image 
+            src={imageUrl} 
+            alt={title}
+            width={500}
+            height={300}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
         </div>
 
-        {/* Lenker */}
-        <div className="flex gap-4">
-          {githubUrl && (
-            <a 
-              href={githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              GitHub →
-            </a>
-          )}
-          {liveUrl && (
-            <a 
-              href={liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Se live →
-            </a>
-          )}
+        {/* Innhold */}
+        <div className="p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
+            {title}
+          </h3>
+          
+          <p className="text-gray-600 mb-4 line-clamp-3">
+            {description}
+          </p>
+
+          {/* Teknologier */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {technologies.map((tech, index) => (
+              <span 
+                key={index}
+                className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          {/* Lenker */}
+          <div className="flex gap-4 mt-auto">
+            {githubUrl && (
+              <span 
+                className="text-gray-600 hover:text-red-600 transition-colors inline-flex items-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(githubUrl, '_blank', 'noopener,noreferrer');
+                }}
+              >
+                GitHub →
+              </span>
+            )}
+            {liveUrl && (
+              <span 
+                className="text-gray-600 hover:text-red-600 transition-colors inline-flex items-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(liveUrl, '_blank', 'noopener,noreferrer');
+                }}
+              >
+                Se live →
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

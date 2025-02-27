@@ -7,7 +7,9 @@ import AboutContent from '@/components/sections/AboutContent'
 import ExperienceContent from '@/components/sections/ExperienceContent'
 import SkillsContent from '@/components/sections/SkillsContent'
 import PhilosophyContent from '@/components/sections/PhilosophyContent'
+import InterestGrid from '@/components/sections/InterestGrid'
 import { TabSections } from '@/types/about'
+import { interests } from '@/data/interests'
 
 const sections: TabSections = {
   about: {
@@ -21,6 +23,10 @@ const sections: TabSections = {
   skills: {
     title: "Teknisk Erfaring",
     content: <SkillsContent />
+  },
+  interests: {
+    title: "Interesser",
+    content: <InterestGrid interests={interests} />
   },
   philosophy: {
     title: "Filosofi",

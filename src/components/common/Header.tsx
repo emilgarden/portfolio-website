@@ -40,7 +40,7 @@ const Header = () => {
                   transition-all duration-200 group
                   ${pathname === item.href
                     ? 'text-white'
-                    : 'text-gray-300 hover:text-white'
+                    : 'text-gray-300 hover:text-black'
                   }
                 `}
               >
@@ -50,7 +50,7 @@ const Header = () => {
                     absolute inset-0 rounded-md transition-all duration-200
                     ${pathname === item.href
                       ? 'bg-red-600'
-                      : 'bg-transparent group-hover:bg-red-600/20'
+                      : 'bg-transparent group-hover:bg-white'
                     }
                   `}
                 />
@@ -84,7 +84,7 @@ const Header = () => {
                     transition-all duration-200 group
                     ${pathname === item.href
                       ? 'text-white'
-                      : 'text-gray-300 hover:text-white'
+                      : 'text-gray-300 hover:text-black'
                     }
                   `}
                   onClick={() => setIsMenuOpen(false)}
@@ -95,7 +95,7 @@ const Header = () => {
                       absolute inset-0 rounded-md transition-all duration-200
                       ${pathname === item.href
                         ? 'bg-red-600'
-                        : 'bg-transparent group-hover:bg-red-600/20'
+                        : 'bg-transparent group-hover:bg-white'
                       }
                     `}
                   />

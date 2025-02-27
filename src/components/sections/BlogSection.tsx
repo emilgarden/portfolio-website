@@ -110,7 +110,6 @@ export default function BlogSection({ posts }: BlogSectionProps) {
       <div className="container mx-auto px-4">
         <SectionHeading
           title="Siste fra bloggen"
-          subtitle="Les våre siste artikler og innlegg"
           alignment="center"
         />
         
