@@ -3,6 +3,22 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
+    // Sjekk om miljøvariabler er satt
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.warn('Supabase-miljøvariabler mangler');
+      return NextResponse.json({
+        success: false,
+        message: 'Supabase-miljøvariabler er ikke konfigurert.',
+        env: {
+          hasSupabaseUrl: !!supabaseUrl,
+          hasSupabaseAnonKey: !!supabaseAnonKey
+        }
+      }, { status: 500 });
+    }
+    
     console.log('Prøver å koble til Supabase...');
     const { data, error } = await supabase.from('test').select('*');
     
