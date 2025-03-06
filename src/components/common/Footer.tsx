@@ -6,6 +6,7 @@ import { Github, Linkedin, Star, Heart, Clock, Zap, ChevronUp, X, Brain, Cpu, Co
 const Footer = () => {
   const currentYear = new Date().getFullYear()
   const [bitCount, setBitCount] = useState(0)
+  const [totalBitsGenerated, setTotalBitsGenerated] = useState(0)
   const [showEmoji, setShowEmoji] = useState(false)
   const [emojiPosition, setEmojiPosition] = useState({ top: 0, left: 0 })
   const [emojiCount, setEmojiCount] = useState(1)
@@ -18,16 +19,26 @@ const Footer = () => {
   
   // Oppgraderinger - endret til informatikk-tema
   const [upgrades, setUpgrades] = useState([
-    { id: 'autoclick1', name: 'Enkel algoritme', description: 'Genererer én bit hvert 10. sekund', cost: 10, purchased: false, cps: 0.1, tier: 1, type: 'autoclick' },
-    { id: 'autoclick2', name: 'Parallell prosessering', description: 'Genererer én bit hvert 5. sekund', cost: 25, purchased: false, cps: 0.2, tier: 2, type: 'autoclick', requires: 'autoclick1' },
-    { id: 'autoclick3', name: 'Kvantedatamaskin', description: 'Genererer én bit hvert 2. sekund', cost: 50, purchased: false, cps: 0.5, tier: 3, type: 'autoclick', requires: 'autoclick2' },
-    { id: 'autoclick4', name: 'Nevrale nettverk', description: 'Genererer én bit per sekund', cost: 100, purchased: false, cps: 1, tier: 4, type: 'autoclick', requires: 'autoclick3' },
-    { id: 'clickpower1', name: 'Optimalisert kode', description: 'Dobler verdien av hvert klikk', cost: 15, purchased: false, power: 2, tier: 1, type: 'clickpower' },
-    { id: 'clickpower2', name: 'Effektive algoritmer', description: 'Øker verdien til 3 per klikk', cost: 40, purchased: false, power: 3, tier: 2, type: 'clickpower', requires: 'clickpower1' },
-    { id: 'clickpower3', name: 'Big O-optimalisering', description: 'Øker verdien til 5 per klikk', cost: 75, purchased: false, power: 5, tier: 3, type: 'clickpower', requires: 'clickpower2' },
-    { id: 'clickpower4', name: 'Kvantekoding', description: 'Øker verdien til 10 per klikk', cost: 150, purchased: false, power: 10, tier: 4, type: 'clickpower', requires: 'clickpower3' },
-    { id: 'multiplier1', name: 'Distribuerte systemer', description: 'Øker alle klikk med 50%', cost: 200, purchased: false, multiplier: 1.5, tier: 1, type: 'multiplier' },
-    { id: 'multiplier2', name: 'Kunstig intelligens', description: 'Dobler effekten av alle klikk', cost: 500, purchased: false, multiplier: 2, tier: 2, type: 'multiplier', requires: 'multiplier1' },
+    // Automatisering (bit-generatorer)
+    { id: 'autoclick1', name: 'Bit Flipper', description: 'Genererer én bit hvert 10. sekund', cost: 10, purchased: false, cps: 0.1, tier: 1, type: 'autoclick' },
+    { id: 'autoclick2', name: 'Logisk Port', description: 'Genererer én bit hvert 5. sekund', cost: 25, purchased: false, cps: 0.2, tier: 2, type: 'autoclick', requires: 'autoclick1' },
+    { id: 'autoclick3', name: 'Halvleder-array', description: 'Genererer én bit hvert 2. sekund', cost: 50, purchased: false, cps: 0.5, tier: 3, type: 'autoclick', requires: 'autoclick2' },
+    { id: 'autoclick4', name: 'Kvantbit-generator', description: 'Genererer én bit per sekund', cost: 100, purchased: false, cps: 1, tier: 4, type: 'autoclick', requires: 'autoclick3' },
+    { id: 'autoclick5', name: 'Supraledende Qubits', description: 'Genererer 2 bits per sekund', cost: 250, purchased: false, cps: 2, tier: 5, type: 'autoclick', requires: 'autoclick4' },
+    
+    // Prosessorkraft (klikk-effektivitet)
+    { id: 'clickpower1', name: '2-bit Prosessor', description: 'Genererer 2 bits per klikk', cost: 15, purchased: false, power: 2, tier: 1, type: 'clickpower' },
+    { id: 'clickpower2', name: '4-bit Mikrokontroller', description: 'Genererer 4 bits per klikk', cost: 40, purchased: false, power: 4, tier: 2, type: 'clickpower', requires: 'clickpower1' },
+    { id: 'clickpower3', name: '8-bit CPU', description: 'Genererer 8 bits (1 byte) per klikk', cost: 80, purchased: false, power: 8, tier: 3, type: 'clickpower', requires: 'clickpower2' },
+    { id: 'clickpower4', name: '16-bit Prosessor', description: 'Genererer 16 bits (2 bytes) per klikk', cost: 160, purchased: false, power: 16, tier: 4, type: 'clickpower', requires: 'clickpower3' },
+    { id: 'clickpower5', name: '32-bit Arkitektur', description: 'Genererer 32 bits (4 bytes) per klikk', cost: 320, purchased: false, power: 32, tier: 5, type: 'clickpower', requires: 'clickpower4' },
+    { id: 'clickpower6', name: '64-bit System', description: 'Genererer 64 bits (8 bytes) per klikk', cost: 640, purchased: false, power: 64, tier: 6, type: 'clickpower', requires: 'clickpower5' },
+    
+    // Datakompresjon (multiplikatorer)
+    { id: 'multiplier1', name: 'Huffman-koding', description: 'Komprimerer data med 25% (1.25× effektivitet)', cost: 200, purchased: false, multiplier: 1.25, tier: 1, type: 'multiplier' },
+    { id: 'multiplier2', name: 'Run-length Encoding', description: 'Komprimerer data med 50% (1.5× effektivitet)', cost: 400, purchased: false, multiplier: 1.5, tier: 2, type: 'multiplier', requires: 'multiplier1' },
+    { id: 'multiplier3', name: 'Lempel-Ziv Algoritme', description: 'Dobler dataeffektiviteten (2× effektivitet)', cost: 800, purchased: false, multiplier: 2, tier: 3, type: 'multiplier', requires: 'multiplier2' },
+    { id: 'multiplier4', name: 'Kvantekompresjon', description: 'Tredobler dataeffektiviteten (3× effektivitet)', cost: 1600, purchased: false, multiplier: 3, tier: 4, type: 'multiplier', requires: 'multiplier3' },
   ])
   
   // Legg til en multiplier for å øke effekten av alle klikk
@@ -70,23 +81,26 @@ const Footer = () => {
     // Lagre fremgangen i localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('bitCount', bitCount.toString());
+      localStorage.setItem('totalBitsGenerated', totalBitsGenerated.toString());
       localStorage.setItem('clickPower', clickPower.toString());
       localStorage.setItem('autoClicksPerSecond', autoClicksPerSecond.toString());
       localStorage.setItem('globalMultiplier', globalMultiplier.toString());
       localStorage.setItem('upgrades', JSON.stringify(upgrades));
     }
-  }, [bitCount, clickPower, autoClicksPerSecond, globalMultiplier, upgrades]);
+  }, [bitCount, totalBitsGenerated, clickPower, autoClicksPerSecond, globalMultiplier, upgrades]);
   
   // Last inn lagret fremgang
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedBitCount = localStorage.getItem('bitCount');
+      const savedTotalBitsGenerated = localStorage.getItem('totalBitsGenerated');
       const savedClickPower = localStorage.getItem('clickPower');
       const savedAutoClicksPerSecond = localStorage.getItem('autoClicksPerSecond');
       const savedGlobalMultiplier = localStorage.getItem('globalMultiplier');
       const savedUpgrades = localStorage.getItem('upgrades');
       
       if (savedBitCount) setBitCount(parseInt(savedBitCount));
+      if (savedTotalBitsGenerated) setTotalBitsGenerated(parseInt(savedTotalBitsGenerated));
       if (savedClickPower) setClickPower(parseInt(savedClickPower));
       if (savedAutoClicksPerSecond) setAutoClicksPerSecond(parseFloat(savedAutoClicksPerSecond));
       if (savedGlobalMultiplier) setGlobalMultiplier(parseFloat(savedGlobalMultiplier));
@@ -142,6 +156,7 @@ const Footer = () => {
     // Legg til klikk med clickPower og globalMultiplier
     const clickValue = Math.floor(clickPower * globalMultiplier);
     setBitCount(prev => prev + clickValue);
+    setTotalBitsGenerated(prev => prev + clickValue);
     
     // Øk antall emojis basert på kudos-nivå
     const newEmojiCount = Math.min(kudosLevel + 1, 5);
@@ -172,6 +187,7 @@ const Footer = () => {
     // Auto-klikk med globalMultiplier
     const autoClickValue = Math.floor(1 * globalMultiplier);
     setBitCount(prev => prev + autoClickValue);
+    setTotalBitsGenerated(prev => prev + autoClickValue);
   }
   
   // Sjekk om en oppgradering er tilgjengelig basert på krav
@@ -211,26 +227,47 @@ const Footer = () => {
   }
 
   const getBitMessage = () => {
-    if (bitCount === 0) return "Klikk på biten!";
-    if (bitCount === 1) return "Du har generert din første bit!";
-    if (bitCount < 10) return `${bitCount} bits? Nå begynner du å få data!`;
-    if (bitCount < 25) return `${bitCount} bits?! Du bygger en imponerende datastruktur!`;
-    if (bitCount < 50) return `${bitCount} bits?! 🤓 Du er en ekte kodekunstner!`;
-    if (bitCount < 100) return `${bitCount} bits?! 🚀 Du har blitt en algoritme-guru!`;
-    if (bitCount < 256) return `${bitCount} bits?! 🌟 Du nærmer deg en hel byte!`;
-    if (bitCount < 1024) return `${bitCount} bits?! 💾 Snart har du en kilobyte!`;
-    return `${bitCount} bits?! 🧠 Du er nå en kunstig superintelligens!`;
+    // Bits
+    if (totalBitsGenerated === 0) return "Klikk på bitene for å starte datainnsamlingen!";
+    if (totalBitsGenerated === 1) return "Du har generert din første bit! Grunnlaget for all digital informasjon.";
+    if (totalBitsGenerated < 8) return `${totalBitsGenerated} bits - fortsett å samle for å danne en byte (8 bits)!`;
+    
+    // Bytes
+    if (totalBitsGenerated === 8) return "Gratulerer! Du har samlet 1 byte (8 bits)!";
+    if (totalBitsGenerated < 64) return `${totalBitsGenerated} bits (${Math.floor(totalBitsGenerated/8)} bytes) - en ASCII-karakter krever 1 byte.`;
+    if (totalBitsGenerated < 128) return `${totalBitsGenerated} bits (${Math.floor(totalBitsGenerated/8)} bytes) - nok til å lagre noen få bokstaver!`;
+    if (totalBitsGenerated < 256) return `${totalBitsGenerated} bits (${Math.floor(totalBitsGenerated/8)} bytes) - nærmer deg 1 kilobit (Kb)!`;
+    
+    // Kilobits
+    if (totalBitsGenerated === 256) return "256 bits! Du har nå 32 bytes - nok til å lagre en kort melding!";
+    if (totalBitsGenerated < 512) return `${totalBitsGenerated} bits (${(totalBitsGenerated/8).toFixed(0)} bytes) - fortsett mot en halv kilobit!`;
+    if (totalBitsGenerated < 1024) return `${totalBitsGenerated} bits (${(totalBitsGenerated/8).toFixed(0)} bytes) - nærmer deg 1 kilobit (1024 bits)!`;
+    
+    // Kilobytes
+    if (totalBitsGenerated === 1024) return "1 kilobit (1024 bits)! Tilsvarer 128 bytes - nok til en tweet fra gammeldagene!";
+    if (totalBitsGenerated < 2048) return `${(totalBitsGenerated/1024).toFixed(2)} kilobits - på vei mot din første kilobyte!`;
+    if (totalBitsGenerated < 8192) return `${(totalBitsGenerated/1024).toFixed(2)} kilobits - bygger opp datamengden!`;
+    if (totalBitsGenerated < 10240) return `${(totalBitsGenerated/1024).toFixed(2)} kilobits (${(totalBitsGenerated/8/1024).toFixed(2)} KB) - snart 10 kilobits!`;
+    
+    // Megabits
+    if (totalBitsGenerated < 102400) return `${(totalBitsGenerated/1024).toFixed(2)} kilobits (${(totalBitsGenerated/8/1024).toFixed(2)} KB) - på vei mot en megabit!`;
+    if (totalBitsGenerated < 1048576) return `${(totalBitsGenerated/1024).toFixed(2)} kilobits (${(totalBitsGenerated/8/1024).toFixed(2)} KB) - imponerende datamengde!`;
+    
+    // Megabytes og videre
+    if (totalBitsGenerated < 8388608) return `${(totalBitsGenerated/1048576).toFixed(2)} megabits (${(totalBitsGenerated/8/1048576).toFixed(2)} MB) - nå snakker vi seriøs databehandling!`;
+    
+    return `${(totalBitsGenerated/1048576).toFixed(2)} megabits! Du har skapt et digitalt imperium av data! 🧠`;
   }
 
   const getRandomEmoji = () => {
-    const emojis = ['💻', '🧠', '⚡', '🔍', '🚀', '🤖', '💡', '👨‍💻', '🔢', '💾', '🌐', '🔋', '🔬']
+    const emojis = ['0️⃣', '1️⃣', '🔟', '💾', '💿', '🖥️', '📊', '📈', '🔢', '⚙️', '🧮', '🔌', '📡']
     return emojis[Math.floor(Math.random() * emojis.length)]
   }
   
   const getKudosLevelIcon = () => {
     switch(kudosLevel) {
       case 0: return null;
-      case 1: return <span className="text-blue-400">💻</span>;
+      case 1: return <span className="text-blue-400">0️⃣1️⃣</span>;
       case 2: return <Code className="h-4 w-4 text-blue-400" />;
       case 3: return <Cpu className="h-4 w-4 text-purple-400" />;
       case 4: return (
@@ -247,6 +284,7 @@ const Footer = () => {
   const resetGame = () => {
     if (confirm('Er du sikker på at du vil nullstille spillet? All fremgang vil gå tapt.')) {
       setBitCount(0);
+      setTotalBitsGenerated(0);
       setClickPower(1);
       setAutoClicksPerSecond(0);
       setKudosLevel(0);
@@ -256,6 +294,7 @@ const Footer = () => {
       // Fjern fra localStorage
       if (typeof window !== 'undefined') {
         localStorage.removeItem('bitCount');
+        localStorage.removeItem('totalBitsGenerated');
         localStorage.removeItem('clickPower');
         localStorage.removeItem('autoClicksPerSecond');
         localStorage.removeItem('globalMultiplier');
@@ -330,16 +369,25 @@ const Footer = () => {
   const funFactCooldownMs = 10000; // 10 sekunder cooldown mellom funfakts
   const funFactDisplayTimeMs = 8000; // 8 sekunder visningstid
   
+  // Lagre forrige bitCount for å oppdage når vi passerer et multiplum av 10
+  const [prevBitCount, setPrevBitCount] = useState(0);
+  const hasPassedMultipleOfTen = bitCount > 0 && 
+                                Math.floor(bitCount / 10) > Math.floor(prevBitCount / 10);
+  
+  // Oppdater prevBitCount etter sjekken
   useEffect(() => {
-    // Vis bare funfakts når:
-    // 1. Vi har nådd et multiplum av 10
+    setPrevBitCount(bitCount);
+  }, [bitCount]);
+  
+  useEffect(() => {
+    // Vis funfakts når:
+    // 1. Vi har passert et multiplum av 10
     // 2. Det er ingen funfakt som vises nå
     // 3. Det har gått minst 'cooldown' tid siden siste funfakt
     const now = Date.now();
     const timeSinceLastFact = now - lastFunFactTime;
-    const isMultipleOfTen = bitCount > 0 && bitCount % 10 === 0;
     
-    if (isMultipleOfTen && !funFact && timeSinceLastFact > funFactCooldownMs) {
+    if (hasPassedMultipleOfTen && !funFact && timeSinceLastFact > funFactCooldownMs) {
       // Vis en ny funfakt
       const newFunFact = getRandomFunFact();
       setFunFact(newFunFact);
@@ -366,7 +414,7 @@ const Footer = () => {
                 <button 
                   onClick={handleBitClick}
                   className={`transform transition-all duration-300 hover:scale-110 active:scale-125 focus:outline-none ${kudosLevel >= 3 ? 'animate-pulse' : ''}`}
-                  aria-label="Klikk på biten"
+                  aria-label="Klikk for å generere bits"
                   style={{
                     filter: kudosLevel >= 2 ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.7))' : 'none'
                   }}
@@ -377,7 +425,7 @@ const Footer = () => {
                     kudosLevel === 2 ? 'opacity-100' : 
                     kudosLevel === 3 ? 'opacity-100' : 
                     'opacity-100'
-                  } transition-opacity duration-300`}>💻</span>
+                  } transition-opacity duration-300`}>0️⃣1️⃣</span>
                 </button>
                 
                 {/* Animerte emojis - absolutt posisjonert */}
@@ -401,18 +449,36 @@ const Footer = () => {
               {/* Teller og melding */}
               <div className="text-center">
                 <p className="text-blue-300 text-xl font-bold mb-1">
-                  {bitCount} bits
+                  {`${bitCount} bits`}
                 </p>
+                
+                {/* Kompakt statistikk */}
+                <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-400 mb-2">
+                  {autoClicksPerSecond > 0 && (
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      <span>{autoClicksPerSecond.toFixed(1)}/s</span>
+                    </div>
+                  )}
+                  
+                  {clickPower > 1 && (
+                    <div className="flex items-center gap-1">
+                      <Zap className="h-3 w-3" />
+                      <span>+{effectiveClickPower}</span>
+                    </div>
+                  )}
+                  
+                  {globalMultiplier > 1 && (
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3" />
+                      <span>x{globalMultiplier.toFixed(1)}</span>
+                    </div>
+                  )}
+                </div>
+                
                 <p className="text-gray-300 text-sm">
                   {getBitMessage()}
                 </p>
-                
-                {/* Fun fact - vises bare når funFact ikke er null */}
-                {funFact && (
-                  <div className="mt-2 p-2 bg-blue-900/30 border border-blue-700/30 rounded-md text-xs text-blue-200 max-w-xs mx-auto animate-fade-in">
-                    <p><strong>Fun Fact:</strong> {funFact}</p>
-                  </div>
-                )}
               </div>
               
               {/* Oppgraderingsknapp */}
@@ -424,26 +490,11 @@ const Footer = () => {
                 <ChevronUp className={`h-3 w-3 transition-transform ${showUpgrades ? 'rotate-180' : ''}`} />
               </button>
               
-              {/* Kompakt statistikk */}
-              <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-400 mt-1">
-                {autoClicksPerSecond > 0 && (
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    <span>{autoClicksPerSecond.toFixed(1)}/s</span>
-                  </div>
-                )}
-                
-                {clickPower > 1 && (
-                  <div className="flex items-center gap-1">
-                    <Zap className="h-3 w-3" />
-                    <span>+{effectiveClickPower}</span>
-                  </div>
-                )}
-                
-                {globalMultiplier > 1 && (
-                  <div className="flex items-center gap-1">
-                    <Star className="h-3 w-3" />
-                    <span>x{globalMultiplier.toFixed(1)}</span>
+              {/* Fun fact - med fast høyde for å unngå "hopping" */}
+              <div className="h-16 flex items-center justify-center mt-2">
+                {funFact && (
+                  <div className="p-2 bg-blue-900/30 border border-blue-700/30 rounded-md text-xs text-blue-200 max-w-xs mx-auto animate-fade-in">
+                    <p><strong>Fun Fact:</strong> {funFact}</p>
                   </div>
                 )}
               </div>
@@ -496,8 +547,8 @@ const Footer = () => {
                 <div key={type} className="mb-3">
                   <h5 className="text-xs font-medium text-gray-300 mb-1 border-b border-gray-700 pb-1">
                     {type === 'clickpower' ? 'Prosessorkraft' : 
-                     type === 'autoclick' ? 'Automatisering' : 
-                     'Skaleringsløsninger'}
+                     type === 'autoclick' ? 'Bit-generatorer' : 
+                     'Datakompresjon'}
                   </h5>
                   
                   {upgrades
@@ -527,7 +578,7 @@ const Footer = () => {
                               <span className="text-xs font-medium text-blue-300">{upgrade.cost} bits</span>
                             )}
                             {upgrade.purchased && (
-                              <span className="text-xs font-medium text-green-400 px-1.5 py-0.5 bg-green-900/50 rounded-full">Installert</span>
+                              <span className="text-xs font-medium text-green-400 px-1.5 py-0.5 bg-green-900/50 rounded-full">Aktivert</span>
                             )}
                           </div>
                           <p className="text-xs text-gray-400 mt-0.5">{upgrade.description}</p>
