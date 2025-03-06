@@ -6,6 +6,7 @@ import supabase from '@/supabaseClient'
 import { BlogPost } from '@/types/blog'
 import { Trash2, Edit, Plus, Eye } from 'lucide-react'
 import Image from 'next/image'
+import { toast } from 'react-hot-toast'
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<BlogPost[]>([])
@@ -43,18 +44,22 @@ export default function PostsPage() {
   }
 
   async function handleDelete(id: string | number) {
-    if (!confirm('Er du sikker på at du vil slette dette innlegget? Denne handlingen kan ikke angres.')) {
+    if (!confirm('Er du sikker på at du vil slette dette innlegget?')) {
       return
     }
     
     try {
       setLoading(true)
       
-      // Først fjern alle tag-koblinger
-      await supabase
+      // Slett først alle tag-relasjoner
+      const { error: tagRelationError } = await supabase
         .from('blog_post_tags')
         .delete()
         .eq('post_id', id.toString())
+      
+      if (tagRelationError) {
+        throw tagRelationError
+      }
       
       // Deretter slett selve innlegget
       const { error } = await supabase
@@ -68,9 +73,11 @@ export default function PostsPage() {
       
       // Oppdater listen etter sletting
       setPosts(posts.filter(post => post.id !== id))
+      toast.success('Innlegget ble slettet!')
     } catch (error: any) {
       console.error('Feil ved sletting av innlegg:', error)
       alert('Kunne ikke slette innlegg: ' + error.message)
+      toast.error('Kunne ikke slette innlegg: ' + error.message)
     } finally {
       setLoading(false)
     }

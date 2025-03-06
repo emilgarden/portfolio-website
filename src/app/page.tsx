@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import Header from '@/components/common/Header';
-import HeroSection from '@/components/sections/HeroSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import BlogSection from '@/components/sections/BlogSection';
 import supabase from '@/supabaseClient'
 import { BlogPost } from '@/types/blog'
+import HomeHero from '@/components/sections/HomeHero';
+import { getProfileData } from '@/lib/profile';
 
 // Hent de nyeste blogginnleggene for forsiden
 async function getLatestBlogPosts() {
@@ -31,6 +32,9 @@ export default async function Home() {
   // Hent de nyeste blogginnleggene
   const latestPosts = await getLatestBlogPosts()
   
+  // Hent profildata
+  const profileData = await getProfileData()
+  
   // Konverter til formatet som BlogSection forventer
   const formattedPosts = latestPosts.map(post => ({
     id: post.id,
@@ -47,7 +51,7 @@ export default async function Home() {
     <>
       <Header />
       <main className="pt-16">
-        <HeroSection />
+        <HomeHero profileData={profileData} />
         <ProjectsSection />
         <BlogSection posts={formattedPosts} />
       </main>

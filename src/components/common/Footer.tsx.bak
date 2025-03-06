@@ -276,6 +276,33 @@ const Footer = () => {
   // Beregn effektiv auto-klikk-kraft
   const effectiveAutoClickPower = Math.floor(autoClicksPerSecond * globalMultiplier);
 
+  // Generer en tilfeldig "fun fact" om informatikk
+  const getRandomFunFact = () => {
+    const funFacts = [
+      "Ada Lovelace (1815-1852) regnes som verdens første programmerer. Hun skrev algoritmer for Charles Babbages analytiske maskin.",
+      "Alan Turing (1912-1954) knekket den tyske Enigma-koden under 2. verdenskrig og la grunnlaget for moderne datamaskiner.",
+      "Grace Hopper (1906-1992) oppfant den første kompilatoren og var sentral i utviklingen av programmeringsspråket COBOL.",
+      "John von Neumann (1903-1957) utviklet arkitekturen som de fleste moderne datamaskiner fortsatt er basert på.",
+      "Tim Berners-Lee (f. 1955) oppfant World Wide Web i 1989 mens han jobbet ved CERN i Sveits.",
+      "Linus Torvalds (f. 1969) skapte Linux-kjernen i 1991 som en 21 år gammel student i Finland.",
+      "Margaret Hamilton (f. 1936) ledet utviklingen av programvaren for Apollo-romfartsprogrammet til NASA.",
+      "Donald Knuth (f. 1938) er kjent for sitt monumentale verk 'The Art of Computer Programming' og TeX-typesettingssystemet.",
+      "Dennis Ritchie (1941-2011) skapte programmeringsspråket C og var med på å utvikle Unix-operativsystemet.",
+      "Bjarne Stroustrup (f. 1950) utviklet programmeringsspråket C++ som en utvidelse av C.",
+      "Edsger Dijkstra (1930-2002) utviklet flere grunnleggende algoritmer, inkludert den berømte korteste-vei-algoritmen.",
+      "John McCarthy (1927-2011) oppfant programmeringsspråket Lisp og var en pioner innen kunstig intelligens.",
+      "Vint Cerf (f. 1943) og Bob Kahn (f. 1938) utviklet TCP/IP-protokollen som er grunnlaget for internett.",
+      "Barbara Liskov (f. 1939) utviklet Liskov-substitusjonsprinsippet, et fundamentalt konsept i objektorientert programmering.",
+      "Claude Shannon (1916-2001) regnes som informasjonsteoriens far og la grunnlaget for digital kommunikasjon.",
+      "Kristen Nygaard (1926-2002) og Ole-Johan Dahl (1931-2002) utviklet Simula, det første objektorienterte programmeringsspråket.",
+      "Frances Allen (1932-2020) var den første kvinnen som vant Turing-prisen for sitt banebrytende arbeid med kompilatoroptimalisering.",
+      "Shafi Goldwasser (f. 1958) har revolusjonert kryptografi og er en av få som har vunnet Turing-prisen to ganger.",
+      "Katherine Johnson (1918-2020) var en matematiker hos NASA som beregnet baner for romferder, inkludert Apollo 11.",
+      "Guido van Rossum (f. 1956) skapte programmeringsspråket Python i 1991, oppkalt etter komediegruppen Monty Python."
+    ];
+    return funFacts[Math.floor(Math.random() * funFacts.length)];
+  }
+  
   // Generer en tilfeldig "fun fact" om informatikere og spilldesignere
   const getRandomFunFact = () => {
     const funFacts = [
@@ -324,33 +351,17 @@ const Footer = () => {
     return funFacts[Math.floor(Math.random() * funFacts.length)];
   }
   
-  // Håndtering av funfakts med cooldown og rate-limiting
+  // Sjekk om vi skal vise en fun fact (hver 10. bit)
   const [funFact, setFunFact] = useState<string | null>(null);
-  const [lastFunFactTime, setLastFunFactTime] = useState(0);
-  const funFactCooldownMs = 10000; // 10 sekunder cooldown mellom funfakts
-  const funFactDisplayTimeMs = 8000; // 8 sekunder visningstid
   
   useEffect(() => {
-    // Vis bare funfakts når:
-    // 1. Vi har nådd et multiplum av 10
-    // 2. Det er ingen funfakt som vises nå
-    // 3. Det har gått minst 'cooldown' tid siden siste funfakt
-    const now = Date.now();
-    const timeSinceLastFact = now - lastFunFactTime;
-    const isMultipleOfTen = bitCount > 0 && bitCount % 10 === 0;
-    
-    if (isMultipleOfTen && !funFact && timeSinceLastFact > funFactCooldownMs) {
-      // Vis en ny funfakt
-      const newFunFact = getRandomFunFact();
-      setFunFact(newFunFact);
-      setLastFunFactTime(now);
-      
-      // Fjern funfakten etter visningstiden
+    if (bitCount > 0 && bitCount % 10 === 0) {
+      setFunFact(getRandomFunFact());
       setTimeout(() => {
         setFunFact(null);
-      }, funFactDisplayTimeMs);
+      }, 8000);
     }
-  }, [bitCount, funFact, lastFunFactTime]);
+  }, [bitCount]);
 
   return (
     <footer className="bg-black text-white">

@@ -6,6 +6,7 @@ import BlogGrid from '@/components/sections/BlogGrid'
 import BlogSidebar from '@/components/sections/BlogSidebar'
 import supabase from '@/supabaseClient'
 import { BlogPost } from '@/types/blog'
+import { useAppSelector } from '@/hooks/redux'
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([])
@@ -15,6 +16,9 @@ export default function BlogPage() {
   const [error, setError] = useState<string | null>(null)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  
+  // Hent søkeordet fra Redux-staten
+  const { searchQuery } = useAppSelector(state => state.blog)
 
   useEffect(() => {
     async function fetchData() {
@@ -76,11 +80,18 @@ export default function BlogPage() {
     fetchData()
   }, [])
 
-  // Filtrer innlegg basert på aktiv kategori og tag
+  // Filtrer innlegg basert på aktiv kategori, tag og søkeord
   const filteredPosts = posts.filter(post => {
     const matchesCategory = !activeCategory || post.category?.name === activeCategory
     const matchesTag = !activeTag || post.tags?.some(tagObj => tagObj.tag.name === activeTag)
-    return matchesCategory && matchesTag
+    
+    // Legg til søkefiltrering
+    const matchesSearch = !searchQuery || 
+      post.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.content?.toLowerCase().includes(searchQuery.toLowerCase())
+    
+    return matchesCategory && matchesTag && matchesSearch
   })
 
   return (
@@ -97,7 +108,7 @@ export default function BlogPage() {
             ) : (
               <BlogGrid 
                 posts={filteredPosts} 
-                emptyMessage="Ingen innlegg funnet med valgte filtre."
+                emptyMessage={searchQuery ? `Ingen innlegg funnet for søket "${searchQuery}"` : "Ingen innlegg funnet med valgte filtre."}
               />
             )}
           </div>

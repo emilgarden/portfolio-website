@@ -85,3 +85,27 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;  /* Chrome, Safari and Opera */
 }
+
+/* Sikre at innholdet ikke blir skjult bak headeren */
+main {
+  padding-top: 4rem; /* Juster denne verdien basert på høyden til headeren */
+}
+
+section {
+  scroll-margin-top: 5rem; /* For smooth scrolling til seksjoner */
+}
+
+/* Forbedre lesbarhet på mobil */
+@media (max-width: 768px) {
+  main {
+    padding-top: 3.5rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+}

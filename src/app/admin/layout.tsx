@@ -64,7 +64,8 @@ export default function AdminLayout({
   const navItems = [
     { name: 'Dashboard', href: '/admin' },
     { name: 'Prosjekter', href: '/admin/projects' },
-    { name: 'Blogg', href: '/admin/blog' }
+    { name: 'Blogg', href: '/admin/blog' },
+    { name: 'Profil', href: '/admin/profile' }
   ]
 
   const handleSignOut = async () => {

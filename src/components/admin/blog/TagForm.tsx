@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import supabase from '@/supabaseClient'
 import { BlogTag } from '@/types/blog'
+import { toast } from 'react-hot-toast'
 
 interface TagFormProps {
   tag?: BlogTag;
@@ -80,11 +81,13 @@ export default function TagForm({ tag, isEdit = false }: TagFormProps) {
         throw saveError
       }
       
+      toast.success(isEdit ? 'Taggen ble oppdatert!' : 'Taggen ble opprettet!')
       router.push('/admin/blog/tags')
       router.refresh()
     } catch (error: any) {
       console.error('Feil ved lagring av tagg:', error)
       setError(error.message || 'Det oppstod en feil ved lagring av taggen')
+      toast.error(error.message || 'Det oppstod en feil ved lagring av taggen')
     } finally {
       setLoading(false)
     }

@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import supabase from '@/supabaseClient'
 import { BlogCategory, BlogCategoryFormData } from '@/types/blog'
+import { toast } from 'react-hot-toast'
 
 interface CategoryFormProps {
   category?: BlogCategory;
@@ -81,11 +82,13 @@ export default function CategoryForm({ category, isEdit = false }: CategoryFormP
         throw saveError
       }
       
+      toast.success(isEdit ? 'Kategorien ble oppdatert!' : 'Kategorien ble opprettet!')
       router.push('/admin/blog/categories')
       router.refresh()
     } catch (error: any) {
       console.error('Feil ved lagring av kategori:', error)
       setError(error.message || 'Det oppstod en feil ved lagring av kategorien')
+      toast.error(error.message || 'Det oppstod en feil ved lagring av kategorien')
     } finally {
       setLoading(false)
     }

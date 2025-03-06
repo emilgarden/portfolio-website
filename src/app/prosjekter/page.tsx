@@ -50,7 +50,6 @@ export default async function Page() {
           categories={categories}
           technologies={technologies}
         />
-        <ProjectGrid projects={projects} />
       </div>
     </main>
   )

@@ -1,8 +1,10 @@
 import '@/app/globals.css';
+import { Inter } from 'next/font/google'
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 import { Providers } from './providers'
 import type { Metadata } from 'next'
+import CustomToaster from '@/components/common/CustomToaster'
 
 export const metadata: Metadata = {
   title: {
@@ -36,9 +38,12 @@ export default function RootLayout({
       <body className="antialiased">
         <Providers>
           <Header />
-          {children}
+          <div className="min-h-screen">
+            {children}
+          </div>
           <Footer />
         </Providers>
+        <CustomToaster />
       </body>
     </html>
   );

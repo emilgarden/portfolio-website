@@ -5,6 +5,7 @@ import Link from 'next/link'
 import supabase from '@/supabaseClient'
 import { Project } from '@/types/project'
 import { Trash2, Edit, Eye, Plus } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
@@ -57,9 +58,11 @@ export default function ProjectsPage() {
       
       // Oppdater listen etter sletting
       setProjects(projects.filter(project => project.id !== id))
+      toast.success('Prosjektet ble slettet!')
     } catch (error: any) {
       console.error('Feil ved sletting av prosjekt:', error)
       alert('Kunne ikke slette prosjekt: ' + error.message)
+      toast.error('Kunne ikke slette prosjekt: ' + error.message)
     } finally {
       setLoading(false)
     }

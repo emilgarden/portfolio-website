@@ -6,6 +6,7 @@ import supabase from '@/supabaseClient'
 import { Project, ProjectFormData } from '@/types/project'
 import { X } from 'lucide-react'
 import ImageUploader from './ImageUploader'
+import { toast } from 'react-hot-toast'
 
 interface ProjectFormProps {
   project?: Project;
@@ -61,23 +62,54 @@ export default function ProjectForm({ project, isEdit = false }: ProjectFormProp
     setError(null)
 
     try {
-      const { error } = isEdit 
-        ? await supabase
-            .from('projects')
-            .update(formData)
-            .eq('id', project?.id)
-        : await supabase
-            .from('projects')
-            .insert([formData])
+      // Valider at tittel og slug er fylt ut
+      if (!formData.title.trim()) {
+        throw new Error('Tittel er påkrevd')
+      }
       
-      if (error) {
-        throw error
+      if (!formData.slug.trim()) {
+        throw new Error('Slug er påkrevd')
+      }
+      
+      // Sjekk om slug allerede eksisterer (unntatt ved redigering av samme prosjekt)
+      const { data: existingProject, error: slugCheckError } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('slug', formData.slug)
+        .single()
+      
+      if (slugCheckError && slugCheckError.code !== 'PGRST116') { // PGRST116 = Ingen resultater
+        throw slugCheckError
+      }
+      
+      if (existingProject && (!isEdit || existingProject.id !== project?.id)) {
+        throw new Error('Et prosjekt med denne slug-en eksisterer allerede')
+      }
+      
+      // Lagre prosjekt
+      if (isEdit && project?.id) {
+        const { error: updateError } = await supabase
+          .from('projects')
+          .update(formData)
+          .eq('id', project.id)
+        
+        if (updateError) throw updateError
+        toast.success('Prosjektet ble oppdatert!')
+      } else {
+        const { error: insertError } = await supabase
+          .from('projects')
+          .insert([formData])
+        
+        if (insertError) throw insertError
+        toast.success('Prosjektet ble opprettet!')
       }
       
       router.push('/admin/projects')
+      router.refresh()
     } catch (error: any) {
       console.error('Feil ved lagring av prosjekt:', error)
-      setError('Kunne ikke lagre prosjekt: ' + error.message)
+      setError(error.message || 'Det oppstod en feil ved lagring av prosjektet')
+      toast.error(error.message || 'Det oppstod en feil ved lagring av prosjektet')
     } finally {
       setLoading(false)
     }

@@ -9,6 +9,7 @@ import ImageUploader from '../ImageUploader'
 import TagSelector from './TagSelector'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'react-hot-toast'
 
 interface PostFormProps {
   post?: BlogPost;
@@ -237,11 +238,12 @@ export default function PostForm({ post, isEdit = false }: PostFormProps) {
         if (tagError) throw tagError
       }
       
-      router.push('/admin/blog/posts')
-      router.refresh()
+      toast.success(isEdit ? 'Innlegget ble oppdatert!' : 'Innlegget ble opprettet!')
+      router.push('/admin/blog')
     } catch (error: any) {
       console.error('Feil ved lagring av innlegg:', error)
-      setError(error.message || 'Det oppstod en feil ved lagring av innlegget')
+      setError('Kunne ikke lagre innlegg: ' + error.message)
+      toast.error('Kunne ikke lagre innlegg: ' + error.message)
     } finally {
       setLoading(false)
     }

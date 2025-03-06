@@ -8,9 +8,7 @@ import { useState } from 'react'
 const navigation = [
   { name: 'Hjem', href: '/' },
   { name: 'Prosjekter', href: '/prosjekter' },
-  { name: 'Blogg', href: '/blogg' },
-  { name: 'Om Meg', href: '/om-meg' },
-  { name: 'Interesser', href: '/interesser' }
+  { name: 'Blogg', href: '/blogg' }
 ]
 
 const Header = () => {
