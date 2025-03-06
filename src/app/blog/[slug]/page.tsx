@@ -5,13 +5,8 @@ import { notFound } from 'next/navigation'
 import supabase from '@/supabaseClient'
 import { formatDate } from '@/utils/date'
 
-interface BlogPostPageProps {
-  params: {
-    slug: string
-  }
-}
 
-export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = await getBlogPost(params.slug)
   
   if (!post) {
@@ -52,7 +47,7 @@ async function getBlogPost(slug: string) {
   return data
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = await getBlogPost(params.slug)
   
   if (!post) {
